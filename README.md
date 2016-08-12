@@ -1,2 +1,2 @@
 # LogManager
-Implementation of a program extracting information from a log-file to an excerpt-list.
+Implementation of a program extracting information from a log-file to an excerpt-list. The program will begin by reading an input file containing log entries, and then will enter an interactive mode where the user can perform timestampt, category, and keyword searches for the purpose of constructing an "excerpt list" of the log file. the generated excutable file will be named "logman", which allows the user to manage and display this "excerpt list" to identify the important/relevant entries of their log file.
