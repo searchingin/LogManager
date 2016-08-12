@@ -1,0 +1,10 @@
+01:00:00:10:10|BEIJING|capital city of PRC
+10:10:00:00:10|SHANGHAI|a pearl in orientals
+02:00:00:10:10|GUANGZHOU|so much delicious food
+05:00:13:00:90|SHENZHENG|new economic district
+05:00:13:01:00|WUHAN|extreme weather 
+00:12:12:12:00|BEIJING|2008 summer olympics
+10:10:00:00:10|SHANGHAI|skyscrapers and wealthy
+00:99:99:99:00|guangzhou|capital city of Guangdong province
+15:00:00:00:00|beijing|mandarin
+60:99:99:99:99|Beijing|beijing opera
