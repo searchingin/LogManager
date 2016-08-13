@@ -32,11 +32,20 @@ public:
             return true;
         else if (left.timeStamp == right.timeStamp && left.category == right.category && left.entryID < right.entryID)
             return true;
-        else 
-           return false; 
+        else
+            return false;
     }
 };
 
+// Main program starts here
+class logman{
+public:
+    // Read log entries from master file
+    void readMaster(const char* filename, std::vector<logEntry> *masterFile);
+
+    // Extract keywords from category/message/keyword search message
+    void extractKeywords(std::vector<std::string> keywords, std::string);
+};
 
 
 
