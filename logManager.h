@@ -8,8 +8,13 @@
 #define LOGMANAGER_H
 
 #include <string>
+#include <cstring>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
+#include <deque>
+#include <unordered_map>
 // Basic data structure to represent log entry
 struct logEntry{
     unsigned int entryID;
@@ -44,7 +49,19 @@ public:
     void readMaster(const char* filename, std::vector<logEntry> *masterFile);
 
     // Extract keywords from category/message/keyword search message
-    void extractKeywords(std::vector<std::string> keywords, std::string);
+    void extractKeywords(std::vector<std::string> &keywords, std::string);
+
+    // Build category_map and keyword_map
+    void buildMap(std::unordered_map<std::string, std::vector<int>> &categoryMap, std::unordered_map<std::string, std::vector<int>> &keywordMap, 
+            std::vector<logEntry> *masterFile, std::vector<int> &sortedID, std::deque<int> &excerptList);
+
+    // Read commands and output results to command line or redirected file
+    void cmdOpt(std::ostringstream &os, 
+            std::unordered_map<std::string, std::vector<int>> &categoryMap,
+            std::unordered_map<std::string, std::vector<int>> &keywordMap,
+            std::vector<logEntry> *masterFile,
+            std::vector<int> &sortedID,
+            std::deque<int> &excerptList);
 };
 
 
