@@ -56,8 +56,7 @@ void logman::extractKeywords(std::vector<std::string> &keywords, std::string str
 void logman::buildMap(std::unordered_map<std::string, std::vector<int>> &categoryMap,
         std::unordered_map<std::string, std::vector<int>> &keywordMap,
         std::vector<logEntry> *masterFile,
-        std::vector<int> &sortedID,
-        std::deque<int> &excerptList){
+        std::vector<int> &sortedID){
     for (unsigned int i = 0; i < masterFile->size(); ++i){
         sortedID.emplace_back((*masterFile)[i].entryID);
     }

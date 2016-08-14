@@ -54,8 +54,10 @@ public:
     void extractKeywords(std::vector<std::string> &keywords, std::string string_in);
 
     // Build category_map and keyword_map
-    void buildMap(std::unordered_map<std::string, std::vector<int>> &categoryMap, std::unordered_map<std::string, std::vector<int>> &keywordMap, 
-            std::vector<logEntry> *masterFile, std::vector<int> &sortedID, std::deque<int> &excerptList);
+    void buildMap(std::unordered_map<std::string,std::vector<int>> &categoryMap, 
+            std::unordered_map<std::string, std::vector<int>> &keywordMap, 
+            std::vector<logEntry> *masterFile, 
+            std::vector<int> &sortedID);
 
     // Read commands and output results to command line or redirected file
     void cmdOpt(std::ostringstream &os, 
