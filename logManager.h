@@ -44,6 +44,20 @@ public:
     }
 };
 
+// Construct a timeStamp comparator
+class timeStamp_comparator{
+private:
+    std::vector<logEntry> *masterFile;
+public:
+    // Constructor
+    timeStamp_comparator(std::vector<logEntry> *masterFile_in): masterFile(masterFile_in){}
+
+    // Comparation operator overloading
+    bool operator() (const unsigned int left, const std::string &value) const{
+        return (*masterFile)[left].timeStamp < value; 
+    }
+};
+
 // Main program starts here
 class logman{
 public:

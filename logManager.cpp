@@ -93,6 +93,88 @@ void logman::buildMap(std::unordered_map<std::string, std::vector<int>> &categor
     }    
 }
 
+// Read commands and output results to command line or redirected file
+// EFFECTS: construct excerptList and implement searching and editing of excerptList
+void logman::cmdOpt(std::ostringstream &os,
+        std::unordered_map<std::string, std::vector<int>> &categoryMap,
+        std::unordered_map<std::string, std::vector<int>> &keywordMap,
+        std::vector<logEntry> *masterFile,
+        std::vector<int> &sortedID,
+        std::deque<int> &excerptList){
+    std::vector<int>::iterator timeStamp_low;
+    std::vector<int>::iterator timeStamp_high;
+    std::string temp;
+    std::vector<std::string> keywords;
+    os << "% ";
+    char cmd;
+    while (std::cin >> cmd){
+        switch (cmd){
+            // timeStamp search
+            case 't':{
+                std::cin.get();
+                std::string begin, end;
+                std::getline(std::cin, begin, '|');
+                std::cin >> end;
+                timeStamp_comparator cmp(masterFile);
+
+                if (begin.length() == 14 && end.length() == 14){
+                    timeStamp_low = std::lower_bound(sortedID.begin(), sortedID.end(), begin, cmp);
+                    timeStamp_high = std::upper_bound(sortedID.begin(), sortedID.end(), end, cmp);
+
+                    os << timeStamp_high - timeStamp_low << " entries found\n";
+                }
+                else{
+                    std::cerr << "Error: Invalid command\n";
+                }
+
+                os << "% "; break;
+                     }
+
+            // category search
+            case 'c':{
+                std::cin.get();
+                std::getline(std::cin, temp);
+                std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+
+                os << categoryMap[temp].size() << " entries found\n";
+                os << "% ";break;
+                     }
+
+            // keyword search
+            case 'k':
+                std::cin.get();
+                std::getline(std::cin, temp);
+                extractKeywords(keywords, temp);
+                bool all_exist = true;
+                for (auto it : keywords){
+                    if (keywordMap.find(it) == keywordMap.end())
+                        all_exist = false;
+                }
+                if (!all_exist)
+                    os << "0 entries found\n" << "% ";
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
