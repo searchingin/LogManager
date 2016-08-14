@@ -31,13 +31,13 @@ private:
     std::vector<logEntry> *masterFile;
 public:
     comparator(std::vector<logEntry> *masterFile_in): masterFile(masterFile_in){}
-    // Operator overloading
-    bool operator()(const logEntry& left, const logEntry& right) const{
-        if (left.timeStamp < right.timeStamp)
+    // Operator overloading, to sort entryID in masterFile
+    bool operator()(const unsigned int left, const unsigned int right) const{
+        if ((*masterFile)[left].timeStamp < (*masterFile)[right].timeStamp)
             return true;
-        else if (left.timeStamp == right.timeStamp && left.category < right.category)
+        else if ((*masterFile)[left].timeStamp == (*masterFile)[right].timeStamp && (*masterFile)[left].category < (*masterFile)[right].category)
             return true;
-        else if (left.timeStamp == right.timeStamp && left.category == right.category && left.entryID < right.entryID)
+        else if ((*masterFile)[left].timeStamp == (*masterFile)[right].timeStamp && (*masterFile)[left].category == (*masterFile)[right].category && (*masterFile)[left].entryID < (*masterFile)[right].entryID)
             return true;
         else
             return false;
@@ -48,7 +48,7 @@ public:
 class logman{
 public:
     // Read log entries from master file
-    void readMaster(const char* filename, std::vector<logEntry> *masterFile);
+    void readMaster(const char* filename, std::vector<logEntry> *masterFile, std::ostringstream &os);
 
     // Extract keywords from category/message/keyword search message
     void extractKeywords(std::vector<std::string> &keywords, std::string string_in);
