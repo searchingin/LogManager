@@ -7,7 +7,7 @@
 #include "logManager.h"
 
 // Implementation of member functions for logman class
-void logman::readMaster(const char* filename, std::vector<logEntry> *masterFile){
+void logman::readMaster(const char* filename, std::vector<logEntry> *masterFile, std::ostringstream &os){
     std::ifstream fin;
     fin.open(filename);
     if (!fin.is_open()){
@@ -23,6 +23,8 @@ void logman::readMaster(const char* filename, std::vector<logEntry> *masterFile)
         current.entryID = count++;
         masterFile->emplace_back(current);
     }
+    fin.close();
+    os << count << " entries read\n";
 }
 
 // Extract keywords from category/message/keyword search message
@@ -56,7 +58,19 @@ void logman::buildMap(std::unordered_map<std::string, std::vector<int>> &categor
         std::vector<logEntry> *masterFile,
         std::vector<int> &sortedID,
         std::deque<int> &excerptList){
-
+    for (unsigned int i = 0; i < masterFile->size(); ++i){
+        sortedID.emplace_back((*masterFile)[i].entryID);
+    }
+    comparator comp(masterFile);
+    // Sort the entryID using O(nlog(n))
+    std::sort(sortedID.begin(), sortedID.end(), comp);
+    // First build categoryMap
+    std::string temp;
+    for (unsigned int i = 0; i < sortedID.size(); ++i){
+        temp = (*masterFile)[i].category;
+        std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+        categoryMap[temp].emplace_back(i);
+    }    
 }
 
 
