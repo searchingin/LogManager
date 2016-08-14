@@ -66,10 +66,31 @@ void logman::buildMap(std::unordered_map<std::string, std::vector<int>> &categor
     std::sort(sortedID.begin(), sortedID.end(), comp);
     // First build categoryMap
     std::string temp;
+    std::vector<std::string> keywords;
     for (unsigned int i = 0; i < sortedID.size(); ++i){
-        temp = (*masterFile)[i].category;
+        temp = (*masterFile)[(unsigned int)sortedID[i]].category;
         std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
         categoryMap[temp].emplace_back(i);
+        // Put category keywords into keywordMap
+        keywords.clear();
+        extractKeywords(keywords, (*masterFile)[(unsigned int)sortedID[i]].category);
+
+        for (auto it : keywords){
+            if (keywordMap[it].empty())
+                keywordMap[it].emplace_back(i);
+            else if (keywordMap[it].back() != (int)i)
+                keywordMap[it].emplace_back(i);
+        }
+        // Put message keywords into keywordMap
+        keywords.clear();
+        extractKeywords(keywords, (*masterFile)[(unsigned int)sortedID[i]].message);
+
+        for (auto it : keywords){
+            if (keywordMap[it].empty())
+                keywordMap[it].emplace_back(i);
+            else if (keywordMap[it].back() != (int)i)
+                keywordMap[it].emplace_back(i);
+        } 
     }    
 }
 
