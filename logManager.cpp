@@ -104,6 +104,7 @@ void logman::cmdOpt(std::ostringstream &os,
     std::vector<int>::iterator timeStamp_low;
     std::vector<int>::iterator timeStamp_high;
     std::string temp;
+    unsigned int temp_entry;
     std::vector<std::string> keywords;
     std::vector<int> intersection_result;
     bool is_timeStamp = false;
@@ -136,7 +137,7 @@ void logman::cmdOpt(std::ostringstream &os,
                 }
 
                 os << "% "; break;
-                     }
+            }
 
             // category search
             case 'c':{
@@ -149,7 +150,7 @@ void logman::cmdOpt(std::ostringstream &os,
 
                 os << categoryMap[temp].size() << " entries found\n";
                 os << "% ";break;
-                     }
+            }
 
             // keyword search
             case 'k':{
@@ -176,7 +177,7 @@ void logman::cmdOpt(std::ostringstream &os,
                     os << intersection_result.size() << " entries found\n";
                 }
                 os << "% "; break;
-                     }
+            }
 
             // Append logEntry
             case 'a':{
@@ -192,25 +193,54 @@ void logman::cmdOpt(std::ostringstream &os,
                 else 
                     std::cerr << "Error: Invalid command\n";
                 os << "% "; break;
-                     }
+            }
 
             // Append previous search result to excerptList
             case 'r':{
-               if (is_timeStamp){
-                   unsigned int current = (unsigned int)(timeStamp_low - sortedID.begin());
-                   unsigned int total = (unsigned int)(timeStamp_low - sortedID.begin());
+                if (is_timeStamp){
+                    unsigned int current = (unsigned int)(timeStamp_low - sortedID.begin());
+                    unsigned int total = (unsigned int)(timeStamp_low - sortedID.begin());
 
-                   while (current < total){
-                       excerptList.emplace_back(current);
-                       current++;
-                   }
-                   os << timeStamp_high - timeStamp_low << " log entries appended\n";
-               }
+                    while (current < total){
+                        excerptList.emplace_back(current);
+                        current++;
+                    }
+                    os << timeStamp_high - timeStamp_low << " log entries appended\n";
+                }
 
-              else if (is_category){
-                  fsd
-              } 
-                     }
+                else if (is_category){
+                    excerptList.insert(excerptList.end(), categoryMap[temp].begin(), categoryMap[temp].end());
+                    os << categoryMap[temp].size() << " log entries appended\n";
+                }
+                
+                else if (is_keyword){
+                    excerptList.insert(excerptList.end(), intersection_result.begin(), intersection_result.end());
+                    os << intersection_result.size() << " log entries appended\n"; 
+                } 
+
+                // No previous search
+                else{
+                    std::cerr << "Error: Invalid command\n";
+                }
+
+                os << "% "; break;
+            }
+
+            // Delete logEntry
+            case 'd':{
+                std::cin.get();
+                std::cin >> temp_entry;
+                
+                if (temp_entry < excerptList.size()){
+                    excerptList.erase(excerptList.begin() + temp_entry);
+                    os << "exerpt list entry " << temp_entry << "deleted\n";
+                }
+                else{
+                    std::cerr << "Error: Invalid command\n";
+                }         
+
+                os << "% "; break;
+            }
         }
     }
 }
