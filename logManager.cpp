@@ -105,6 +105,11 @@ void logman::cmdOpt(std::ostringstream &os,
     std::vector<int>::iterator timeStamp_high;
     std::string temp;
     std::vector<std::string> keywords;
+    std::vector<int> intersection_result;
+    bool is_timeStamp = false;
+    bool is_category = false;
+    bool is_keyword = false;
+    
     os << "% ";
     char cmd;
     while (std::cin >> cmd){
@@ -118,6 +123,9 @@ void logman::cmdOpt(std::ostringstream &os,
                 timeStamp_comparator cmp(masterFile);
 
                 if (begin.length() == 14 && end.length() == 14){
+                    is_timeStamp = true;
+                    is_category = false;
+                    is_keyword = false;
                     timeStamp_low = std::lower_bound(sortedID.begin(), sortedID.end(), begin, cmp);
                     timeStamp_high = std::upper_bound(sortedID.begin(), sortedID.end(), end, cmp);
 
@@ -132,6 +140,9 @@ void logman::cmdOpt(std::ostringstream &os,
 
             // category search
             case 'c':{
+                is_category = true;
+                is_keyword = false;
+                is_timeStamp = false;
                 std::cin.get();
                 std::getline(std::cin, temp);
                 std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
@@ -141,7 +152,10 @@ void logman::cmdOpt(std::ostringstream &os,
                      }
 
             // keyword search
-            case 'k':
+            case 'k':{
+                is_keyword = true;
+                is_timeStamp = false;
+                is_category = false;
                 std::cin.get();
                 std::getline(std::cin, temp);
                 extractKeywords(keywords, temp);
@@ -151,7 +165,52 @@ void logman::cmdOpt(std::ostringstream &os,
                         all_exist = false;
                 }
                 if (!all_exist)
-                    os << "0 entries found\n" << "% ";
+                    os << "0 entries found\n";
+                else{
+                    intersection_result = keywordMap[keywords[0]];
+                    std::vector<int> v;
+                    for (auto it : keywords){
+                         std::set_intersection(intersection_result.begin(), intersection_result.end(), keywordMap[it].begin(), keywordMap[it].end(), v.begin());
+                         intersection_result = v;
+                    }
+                    os << intersection_result.size() << " entries found\n";
+                }
+                os << "% "; break;
+                     }
+
+            // Append logEntry
+            case 'a':{
+                std::cin.get();
+                unsigned int ID_temp;
+                std::cin >> ID_temp;
+                if (ID_temp < sortedID.size()){
+                    auto it = std::find(sortedID.begin(), sortedID.end(), ID_temp);
+                    unsigned int target = (unsigned int)(it - sortedID.begin());
+                    excerptList.emplace_back((int)target);
+                    os << "log entry " << ID_temp << " appended\n";
+                }
+                else 
+                    std::cerr << "Error: Invalid command\n";
+                os << "% "; break;
+                     }
+
+            // Append previous search result to excerptList
+            case 'r':{
+               if (is_timeStamp){
+                   unsigned int current = (unsigned int)(timeStamp_low - sortedID.begin());
+                   unsigned int total = (unsigned int)(timeStamp_low - sortedID.begin());
+
+                   while (current < total){
+                       excerptList.emplace_back(current);
+                       current++;
+                   }
+                   os << timeStamp_high - timeStamp_low << " log entries appended\n";
+               }
+
+              else if (is_category){
+                  fsd
+              } 
+                     }
         }
     }
 }
