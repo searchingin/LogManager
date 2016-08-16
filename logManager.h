@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cctype>
+#include <cstdlib>
 // Basic data structure to represent log entry
 struct logEntry{
     unsigned int entryID;
@@ -62,7 +63,7 @@ public:
 class logman{
 public:
     // Read log entries from master file
-    void readMaster(const char* filename, std::vector<logEntry> *masterFile, std::ostringstream &os);
+    void readMaster(const char* filename, std::vector<logEntry> *masterFile, std::ostream &os);
 
     // Extract keywords from category/message/keyword search message
     void extractKeywords(std::vector<std::string> &keywords, std::string string_in);
@@ -74,7 +75,7 @@ public:
             std::vector<int> &sortedID);
 
     // Read commands and output results to command line or redirected file
-    void cmdOpt(std::ostringstream &os, 
+    void cmdOpt(std::ostream &os, 
             std::unordered_map<std::string, std::vector<int>> &categoryMap,
             std::unordered_map<std::string, std::vector<int>> &keywordMap,
             std::vector<logEntry> *masterFile,

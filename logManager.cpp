@@ -7,7 +7,7 @@
 #include "logManager.h"
 
 // Implementation of member functions for logman class
-void logman::readMaster(const char* filename, std::vector<logEntry> *masterFile, std::ostringstream &os){
+void logman::readMaster(const char* filename, std::vector<logEntry> *masterFile, std::ostream &os){
     std::ifstream fin;
     fin.open(filename);
     if (!fin.is_open()){
@@ -57,6 +57,7 @@ void logman::buildMap(std::unordered_map<std::string, std::vector<int>> &categor
         std::unordered_map<std::string, std::vector<int>> &keywordMap,
         std::vector<logEntry> *masterFile,
         std::vector<int> &sortedID){
+    // Function implementation starts here!
     for (unsigned int i = 0; i < masterFile->size(); ++i){
         sortedID.emplace_back((*masterFile)[i].entryID);
     }
@@ -95,12 +96,14 @@ void logman::buildMap(std::unordered_map<std::string, std::vector<int>> &categor
 
 // Read commands and output results to command line or redirected file
 // EFFECTS: construct excerptList and implement searching and editing of excerptList
-void logman::cmdOpt(std::ostringstream &os,
+void logman::cmdOpt(std::ostream &os,
         std::unordered_map<std::string, std::vector<int>> &categoryMap,
         std::unordered_map<std::string, std::vector<int>> &keywordMap,
         std::vector<logEntry> *masterFile,
         std::vector<int> &sortedID,
         std::deque<int> &excerptList){
+
+    // Function implementation starts here!
     std::vector<int>::iterator timeStamp_low;
     std::vector<int>::iterator timeStamp_high;
     std::string temp;
@@ -335,8 +338,11 @@ void logman::cmdOpt(std::ostringstream &os,
 
             // Quit the program
             case 'q':{
-                std::cout << os.str();
-                return;         
+                #ifndef DEBUG
+                    return;
+                #else
+                std::exit(EXIT_SUCCESS);
+                #endif         
             }
 
             // Comment line
