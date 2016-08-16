@@ -173,6 +173,7 @@ void logman::cmdOpt(std::ostringstream &os,
                     for (auto it : keywords){
                          std::set_intersection(intersection_result.begin(), intersection_result.end(), keywordMap[it].begin(), keywordMap[it].end(), v.begin());
                          intersection_result = v;
+                         v.clear();
                     }
                     os << intersection_result.size() << " entries found\n";
                 }
@@ -233,13 +234,123 @@ void logman::cmdOpt(std::ostringstream &os,
                 
                 if (temp_entry < excerptList.size()){
                     excerptList.erase(excerptList.begin() + temp_entry);
-                    os << "exerpt list entry " << temp_entry << "deleted\n";
+                    os << "exerpt list entry " << temp_entry << " deleted\n";
                 }
                 else{
                     std::cerr << "Error: Invalid command\n";
                 }         
 
                 os << "% "; break;
+            }
+
+            // Move the current temp_entry to to beginning of the excerptList
+            case 'b':{
+                std::cin.get();
+                std::cin >> temp_entry;
+                
+                if (temp_entry < excerptList.size()){
+                    excerptList.emplace_front(excerptList[temp_entry]);
+                    excerptList.erase(excerptList.begin() + temp_entry + 1);
+
+                    os << "excerpt list entry " << temp_entry << " moved\n";
+                }         
+                else{
+                    std::cerr << "Error: Invalid command\n";
+                }
+
+                os << "% "; break;
+            }
+
+            // Move the current temp_entry to end of the excerptList
+            case 'e':{
+                std::cin.get();
+                std::cin >> temp_entry;
+                
+                if (temp_entry < excerptList.size()){
+                    excerptList.emplace_back(excerptList[temp_entry]);
+                    excerptList.erase(excerptList.begin() + temp_entry);
+
+                    os << "excerpt list entry " << temp_entry << " moved\n";
+                }        
+                else{
+                    std::cerr << "Error: Invalid command\n";
+                }
+
+                os << "% "; break;
+            }
+
+            // Sort excerptList
+            case 's':{
+                if (excerptList.size() > 1){
+                    std::sort(excerptList.begin(), excerptList.end());
+                }         
+
+                os << "excerpt list sorted\n" << "% "; break;
+            }
+
+            // Clear excerpt list
+            case 'l':{
+                excerptList.clear();
+                os << "excerpt list cleared\n" << "% "; break;         
+            }
+
+            // Print the most recent search result to command line
+            case 'g':{
+                unsigned int tr;
+                if (is_timeStamp){
+                    std::vector<int>::iterator cur = timeStamp_low;
+                    while (cur < timeStamp_high){
+                        tr = (unsigned int)(*cur);
+                        os << (*cur) << '|' << (*masterFile)[tr].timeStamp << '|' << (*masterFile)[tr].category << '|' << (*masterFile)[tr].message << '\n';
+                        ++cur; 
+                    }
+                }         
+                else if (is_category){
+                    for (auto it : categoryMap[temp]){
+                        tr = (unsigned int)sortedID[(unsigned int)it];
+                        os << tr << '|' << (*masterFile)[tr].timeStamp << '|' << (*masterFile)[tr].category << '|' << (*masterFile)[tr].message << '\n';
+                    }
+                } 
+
+                else if (is_keyword){
+                    for (auto it : keywordMap[temp]){
+                        tr = (unsigned int)sortedID[(unsigned int)it];
+                        os << tr << '|' << (*masterFile)[tr].timeStamp << '|' << (*masterFile)[tr].category << '|' << (*masterFile)[tr].message << '\n';
+                    }
+                }
+
+                os << "% "; break;
+            }
+
+            // Print excerptList to command line
+            case 'p':{
+                unsigned int tr;
+                for (unsigned int i = 0; i < excerptList.size(); ++i){
+                    tr = (unsigned int)sortedID[(unsigned int)excerptList[i]];
+                    os << i << '|' << tr << '|' << (*masterFile)[tr].timeStamp << '|' << (*masterFile)[tr].category << '|' << (*masterFile)[tr].message << '\n';
+                }        
+
+                os << "% "; break; 
+            }
+
+            // Quit the program
+            case 'q':{
+                std::cout << os.str();
+                return;         
+            }
+
+            // Comment line
+            case '#':{
+                std::string trash;
+                std::getline(std::cin, trash);
+                os << "% "; break;         
+            }
+
+            // Other commands will be invalid
+            default:{
+                std::cin.get();
+                std::cerr << "Error: Invalid command\n";
+                os << "% "; break;        
             }
         }
     }
